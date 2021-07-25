@@ -81,7 +81,7 @@ submitButton.addEventListener("click", (event) => {
                         return result.json();
                     })
                     .then((response) => {
-                        onComplete();
+                        onComplete(response);
                         //正常終了
                     })
             }
@@ -98,22 +98,22 @@ const returnButtonError = document.getElementById("return-button-error");
 const returnButtonNotYet = document.getElementById("return-button-not-yet");
 const returnButtonDefault = document.getElementById("return-button-default");
 
-retutnButtonNormal.addEventListener("click", reset);
+
+returnButtonNormal.addEventListener("click", reset);
 returnButtonError.addEventListener("click", reset);
 returnButtonNotYet.addEventListener("click", reset);
 returnButtonDefault.addEventListener("click", reset);
 
-
-const reset = (event) => {
+function reset(event) {
     hideError();
     hideMessage();
-    hideButton();
     hideNotYetMessage();
+    displayButton();
+
 
     card.mount("#card-element");
 
 }
-
 
 //決済処理が正常に終了したときに実行する
 const onComplete = (response) => {
@@ -150,7 +150,7 @@ const shutdown = () => {
     hideButton();
 }
 
-//クラスリストにcollapgeを追加すれば表示、削除すれば非表示にする
+//クラスリストにcollapgeを追加すれば非表示、削除すれば表示にする
 
 const hideSpinner = () => {
     //div classのspinner-borderを選択し、collapseをclassに追加
@@ -190,8 +190,8 @@ const displayNotYetMessage = () => {
 
 //注文確定ボタン
 const hideButton = () => {
-    document.querySelector("payment-form-submit").classList.add("collapse");
+    document.querySelector("#payment-form-submit").classList.add("collapse");
 }
 const displayButton = () => {
-    document.querySelector("payment-form-submit").classList.remove("collapse");
+    document.querySelector("#payment-form-submit").classList.remove("collapse");
 }
