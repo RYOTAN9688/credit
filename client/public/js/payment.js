@@ -3,7 +3,7 @@
 
 //stripeでは公開鍵と秘密鍵による暗号化を行うことで情報を保護している
 //Stripeクラスのコンストラクタには公開鍵を含めている
-let stripe = Stripe("pk_test_xxx");
+let stripe = Stripe("pk_test_51JH4oKAaADgPeLlVfovEqMgpI9T2z0Zva36AMnJUcZk885kXVZ8eB251DQ8C40bW5OlnuOq0WyR4y7UYbpfTeMPN00YxHr8SwD");
 //elementクラスのインスタンスを返す
 let elements = stripe.elements();
 
@@ -22,7 +22,7 @@ let order = {
         }
     ],
     currency: "jpy",
-    paymentMethhodId: null
+    paymentMethodId: "pm_card_visa",
 }
 //カード番号入力のスタイルを決める
 let style = {
@@ -30,13 +30,13 @@ let style = {
         color: "32325d"
     }
 };
-//カードのスタイルをstripeに追加する
+//スタイルを追加する
 const card = elements.create("card", { style: style });
 //stripe情報をcard-elementに上げる
 card.mount("#card-element")
 //入力されたクレジットカード情報をチェック
 card.on("change", ({ error }) => {
-    const displayError = document.getElementById("card=errors");
+    const displayError = document.getElementById("card-errors");
     //エラーの存在を判定する
     if (error) {
         //カード番号が無効と表示する
@@ -51,7 +51,7 @@ const submitButton = document.getElementById("payment-form-submit");
 
 //ボタンがクリックされるとアクションを実行
 
-submitButton.addEventListener("click", (event) => {
+submitButton.addEventListener("click", () => {
     //スピナーを表示する
     displaySpinner();
 
@@ -66,7 +66,7 @@ submitButton.addEventListener("click", (event) => {
                 //成功したときにサーバーサイドに注文情報を送信
             } else {
                 //支払いメソッドIDをリクエストデータに入れる
-                order.paymentMethhodId = result.paymentMethhodId.id;
+                order.paymentMethodId = result.paymentMethod.id;
 
                 //サーバーサイドへ決済情報を渡して結果をハンドリングする
                 //サーバは http://localhost:3000/v1/order/payment にPOSTでリクエストを受け付けている
@@ -98,13 +98,7 @@ const returnButtonError = document.getElementById("return-button-error");
 const returnButtonNotYet = document.getElementById("return-button-not-yet");
 const returnButtonDefault = document.getElementById("return-button-default");
 
-
-returnButtonNormal.addEventListener("click", reset);
-returnButtonError.addEventListener("click", reset);
-returnButtonNotYet.addEventListener("click", reset);
-returnButtonDefault.addEventListener("click", reset);
-
-function reset(event) {
+const reset = () => {
     hideError();
     hideMessage();
     hideNotYetMessage();
@@ -114,6 +108,13 @@ function reset(event) {
     card.mount("#card-element");
 
 }
+
+returnButtonNormal.addEventListener("click", reset);
+returnButtonError.addEventListener("click", reset);
+returnButtonNotYet.addEventListener("click", reset);
+returnButtonDefault.addEventListener("click", reset);
+
+
 
 //決済処理が正常に終了したときに実行する
 const onComplete = (response) => {
